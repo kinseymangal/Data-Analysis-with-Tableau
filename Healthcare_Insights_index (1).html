@@ -1,0 +1,309 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Smart Healthcare and Risk Factor Analysis — an interactive exploration of patient risk indicators and lifestyle insights.">
+  <title>Smart Healthcare &amp; Risk Factor Analysis | Patient Risk Observatory</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root{
+      --ink:#142b2b; --muted:#667b79; --paper:#f5f7f2; --white:#fffefa;
+      --mint:#b9f2d0; --mint-dark:#1e765c; --coral:#ff765f; --line:#dce5de;
+      --night:#102c2b; --gold:#f4c86a; --shadow:0 18px 55px rgba(22,55,48,.09);
+    }
+    *{box-sizing:border-box}
+    html{scroll-behavior:smooth;scroll-padding-top:90px}
+    body{margin:0;background:var(--paper);color:var(--ink);font-family:Manrope,system-ui,sans-serif}
+    a{color:inherit;text-decoration:none}
+    button{font:inherit}
+    .topline{height:5px;background:linear-gradient(90deg,var(--mint) 0 38%,var(--coral) 38% 64%,var(--gold) 64%)}
+    .nav{position:sticky;top:0;z-index:20;background:rgba(245,247,242,.92);backdrop-filter:blur(16px);border-bottom:1px solid var(--line)}
+    .nav-inner{max-width:1320px;margin:auto;padding:17px 28px;display:flex;align-items:center;gap:28px}
+    .brand{display:flex;align-items:center;gap:11px;font-weight:800;letter-spacing:-.05em;font-size:21px}
+    .brand-mark{display:grid;place-items:center;width:38px;height:38px;background:var(--night);color:var(--mint);border-radius:13px;font-size:20px}
+    .brand small{display:block;font:10px 'DM Mono',monospace;letter-spacing:.12em;color:var(--muted);text-transform:uppercase;margin-top:2px}
+    .nav-links{display:flex;align-items:center;gap:25px;margin-left:auto;font-size:12px;font-weight:800;color:#55706c}
+    .nav-links a:hover{color:var(--mint-dark)}
+    .nav-cta{background:var(--night);color:white;border-radius:999px;padding:11px 17px;font-size:12px;font-weight:800}
+    .wrap{max-width:1320px;margin:auto;padding:0 28px}
+    .hero{padding:68px 0 54px;position:relative;overflow:hidden}
+    .hero:after{content:"";position:absolute;right:-140px;top:-170px;width:560px;height:560px;border:1px solid #d9e8dc;border-radius:50%;box-shadow:0 0 0 55px rgba(185,242,208,.13),0 0 0 110px rgba(185,242,208,.08);pointer-events:none}
+    .eyebrow{display:flex;align-items:center;gap:9px;font:11px 'DM Mono',monospace;letter-spacing:.12em;text-transform:uppercase;color:var(--mint-dark)}
+    .eyebrow:before{content:"";width:24px;height:2px;background:var(--coral)}
+    .hero-grid{display:grid;grid-template-columns:1.2fr .8fr;gap:50px;align-items:end;position:relative;z-index:1}
+    h1{font-size:clamp(42px,6.4vw,82px);line-height:.99;letter-spacing:-.075em;max-width:760px;margin:22px 0}
+    h1 em{font-style:normal;color:var(--mint-dark)}
+    .hero-copy{max-width:590px;color:var(--muted);line-height:1.8;font-size:15px}
+    .hero-actions{display:flex;gap:12px;flex-wrap:wrap;margin-top:28px}
+    .btn{display:inline-flex;align-items:center;justify-content:center;gap:9px;border-radius:999px;padding:14px 19px;font-weight:800;font-size:12px;border:1px solid var(--line);transition:.2s}
+    .btn-primary{background:var(--night);color:white;border-color:var(--night)}
+    .btn-primary:hover{background:var(--mint-dark)}
+    .btn-light{background:var(--white)}
+    .hero-note{background:var(--night);color:#f5fff9;border-radius:28px;padding:28px;box-shadow:var(--shadow);position:relative;z-index:1}
+    .hero-note .note-top{display:flex;justify-content:space-between;align-items:center;color:#b8d2c9;font:10px 'DM Mono',monospace;text-transform:uppercase;letter-spacing:.12em}
+    .pulse{width:8px;height:8px;background:var(--mint);border-radius:50%;box-shadow:0 0 0 5px #b9f2d022}
+    .hero-note h2{font-size:24px;line-height:1.2;letter-spacing:-.04em;margin:27px 0 10px}
+    .hero-note p{font-size:12px;line-height:1.8;color:#b8ccc5}
+    .mini-bars{display:flex;align-items:end;gap:8px;height:74px;margin-top:25px}
+    .mini-bars span{flex:1;background:var(--mint);border-radius:6px 6px 2px 2px;opacity:.9}
+    .mini-bars span:nth-child(3n){background:var(--coral)}
+    .mini-bars span:nth-child(2n){opacity:.5}
+    .section{padding:58px 0}
+    .section-head{display:flex;align-items:end;justify-content:space-between;gap:24px;margin-bottom:25px}
+    .section-head h2{font-size:clamp(28px,3.5vw,42px);letter-spacing:-.06em;line-height:1.05;margin:13px 0 0}
+    .section-head p{max-width:470px;color:var(--muted);font-size:13px;line-height:1.75;margin:0}
+    .metrics{display:grid;grid-template-columns:repeat(4,1fr);gap:13px}
+    .metric{background:var(--white);border:1px solid var(--line);border-radius:18px;padding:20px;min-height:130px;position:relative;overflow:hidden}
+    .metric:after{content:"";position:absolute;width:72px;height:72px;border-radius:50%;right:-22px;bottom:-26px;background:var(--mint);opacity:.45}
+    .metric:nth-child(2):after{background:var(--coral)}
+    .metric:nth-child(3):after{background:var(--gold)}
+    .metric:nth-child(4):after{background:#c9c6ff}
+    .metric-label{font:10px 'DM Mono',monospace;text-transform:uppercase;letter-spacing:.09em;color:var(--muted)}
+    .metric-number{font-size:31px;font-weight:800;letter-spacing:-.06em;margin-top:13px}
+    .metric-foot{font-size:11px;color:var(--muted);margin-top:3px}
+    .insight-strip{margin-top:14px;background:#e9f4ec;border:1px solid #d6e8dc;border-radius:16px;padding:17px 20px;display:flex;align-items:center;gap:13px;font-size:12px;line-height:1.7;color:#365a50}
+    .insight-strip b{color:var(--ink)}
+    .dot-icon{width:31px;height:31px;flex-shrink:0;border-radius:10px;background:var(--mint);display:grid;place-items:center;color:var(--mint-dark);font-weight:800}
+    .viz-section{background:var(--night);color:#f8fff9;padding:66px 0}
+    .viz-section .eyebrow{color:var(--mint)}
+    .viz-section .section-head p{color:#b6cbc3}
+    .viz-frame{background:#fff;border-radius:18px;overflow:hidden;border:1px solid #ffffff2c;box-shadow:0 20px 70px #06191866}
+    .viz-frame iframe{display:block;width:100%;border:0;min-height:780px}
+    .viz-toolbar{display:flex;align-items:center;justify-content:space-between;gap:15px;padding:14px 18px;background:#173b39;border:1px solid #31514b;border-radius:14px;margin-bottom:14px}
+    .viz-toolbar span{font-size:12px;color:#c4d9d1}
+    .viz-toolbar b{display:block;color:white;font-size:13px;margin-bottom:3px}
+    .pill{display:inline-flex;align-items:center;gap:7px;border:1px solid #42625a;border-radius:999px;padding:9px 12px;color:var(--mint);font-size:11px;font-weight:800;white-space:nowrap}
+    .embed-wrap{position:relative;width:100%;background:#fff;overflow:hidden}
+    .embed-wrap .tableauPlaceholder{width:100%!important;max-width:100%!important;margin:0 auto}
+    .embed-wrap object.tableauViz{width:100%!important;min-width:0!important;max-width:100%!important}
+    .embed-wrap .tableauPlaceholder iframe{width:100%!important;max-width:100%!important}
+    .story-section{padding:68px 0}
+    .story-card{display:grid;grid-template-columns:.72fr 1.28fr;gap:25px;align-items:stretch}
+    .story-intro{background:var(--mint);border-radius:22px;padding:30px;display:flex;flex-direction:column;justify-content:space-between;min-height:250px}
+    .story-intro h3{font-size:31px;line-height:1.08;letter-spacing:-.06em;margin:22px 0 12px}
+    .story-intro p{font-size:12px;line-height:1.8;color:#365c50}
+    .story-intro .story-index{font:11px 'DM Mono',monospace;letter-spacing:.1em;text-transform:uppercase}
+    .story-embed{border:1px solid var(--line);background:white;border-radius:22px;padding:10px;overflow:hidden;min-width:0}
+    .story-embed .tableauPlaceholder{width:100%!important}
+    .story-embed object.tableauViz{width:100%!important;min-width:0!important;max-width:100%!important}
+    .method-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+    .method-card{border:1px solid var(--line);background:var(--white);border-radius:18px;padding:23px}
+    .method-card .num{font:11px 'DM Mono',monospace;color:var(--mint-dark)}
+    .method-card h3{font-size:16px;margin:16px 0 8px;letter-spacing:-.03em}
+    .method-card p{font-size:12px;line-height:1.8;color:var(--muted);margin:0}
+    .footer{background:#0a2221;color:#d7e7df;padding:30px 0}
+    .footer-inner{display:flex;align-items:center;justify-content:space-between;gap:18px}
+    .footer p{font-size:11px;line-height:1.7;color:#9bb6ac;margin:5px 0 0}
+    .footer-links{display:flex;gap:17px;flex-wrap:wrap;font-size:11px;color:#c5ddd3}
+    .footer-links a:hover{color:var(--mint)}
+    .backtop{position:fixed;right:18px;bottom:18px;z-index:15;width:42px;height:42px;border:0;border-radius:14px;background:var(--coral);color:#2a302b;font-weight:900;box-shadow:var(--shadow);cursor:pointer}
+    @media(max-width:900px){
+      .hero-grid{grid-template-columns:1fr;gap:28px}.hero-note{max-width:600px}
+      .metrics{grid-template-columns:repeat(2,1fr)}.story-card{grid-template-columns:1fr}
+      .method-grid{grid-template-columns:1fr}.nav-links{gap:13px}
+      .section-head{align-items:start;flex-direction:column}
+    }
+    @media(max-width:620px){
+      .nav-inner{padding:12px 16px;gap:10px}.wrap{padding:0 16px}
+      .nav-links{display:none}.nav-cta{margin-left:auto;padding:10px 12px}
+      .hero{padding:48px 0 36px}h1{font-size:46px}
+      .hero-note{padding:22px}.metrics{gap:9px}.metric{padding:15px;min-height:118px}
+      .metric-number{font-size:26px}.section{padding:44px 0}
+      .viz-section{padding:48px 0}.viz-frame iframe{min-height:650px}
+      .viz-toolbar{align-items:flex-start;flex-direction:column}
+      .footer-inner{align-items:flex-start;flex-direction:column}
+    }
+  </style>
+</head>
+<body>
+  <div class="topline"></div>
+  <header class="nav">
+    <div class="nav-inner">
+      <a class="brand" href="#home" aria-label="Health360 home">
+        <span class="brand-mark">✳</span>
+        <span>health<span style="color:var(--mint-dark)">360</span><small>Patient risk observatory</small></span>
+      </a>
+      <nav class="nav-links" aria-label="Main navigation">
+        <a href="#overview">Overview</a>
+        <a href="#dashboard">Dashboard</a>
+        <a href="#story">Data story</a>
+        <a href="#methodology">Methodology</a>
+      </nav>
+      <a class="nav-cta" href="#dashboard">Explore data ↗</a>
+    </div>
+  </header>
+
+  <main>
+    <section class="hero" id="home">
+      <div class="wrap hero-grid">
+        <div>
+          <div class="eyebrow">Healthcare intelligence / 01</div>
+          <h1>Look closer.<br><em>Understand risk.</em></h1>
+          <p class="hero-copy">Health360 explores how patient demographics, lifestyle choices and health indicators relate to disease patterns. Use the interactive dashboard to examine the data, then follow the story to connect the findings.</p>
+          <div class="hero-actions">
+            <a class="btn btn-primary" href="#dashboard">Explore the dashboard <span>↗</span></a>
+            <a class="btn btn-light" href="#story">Read the data story <span>↓</span></a>
+          </div>
+        </div>
+        <aside class="hero-note">
+          <div class="note-top"><span>Field notes / Health analytics</span><span class="pulse"></span></div>
+          <h2>One dataset.<br>Multiple perspectives.</h2>
+          <p>Move from population-level indicators to lifestyle comparisons and BMI-related risk patterns. Select filters within Tableau to explore the published views.</p>
+          <div class="mini-bars" aria-hidden="true">
+            <span style="height:35%"></span><span style="height:54%"></span><span style="height:42%"></span>
+            <span style="height:75%"></span><span style="height:61%"></span><span style="height:88%"></span>
+            <span style="height:67%"></span><span style="height:96%"></span><span style="height:72%"></span>
+            <span style="height:83%"></span><span style="height:58%"></span><span style="height:77%"></span>
+          </div>
+        </aside>
+      </div>
+    </section>
+
+    <section class="section" id="overview">
+      <div class="wrap">
+        <div class="section-head">
+          <div><div class="eyebrow">At a glance / 02</div><h2>A structured view<br>of patient health.</h2></div>
+          <p>The published workbook contains the project’s detailed measures and interactive views. These cards introduce the key areas of analysis; use the live Tableau dashboard below for source-linked values and filters.</p>
+        </div>
+        <div class="metrics">
+          <article class="metric"><div class="metric-label">Dataset focus</div><div class="metric-number">Patients</div><div class="metric-foot">Population-level analysis</div></article>
+          <article class="metric"><div class="metric-label">Health outcomes</div><div class="metric-number">03</div><div class="metric-foot">Heart disease · diabetes · stroke</div></article>
+          <article class="metric"><div class="metric-label">Risk dimensions</div><div class="metric-number">Lifestyle</div><div class="metric-foot">Exercise · alcohol · smoking</div></article>
+          <article class="metric"><div class="metric-label">Segmentation</div><div class="metric-number">BMI + age</div><div class="metric-foot">Compare groups and patterns</div></article>
+        </div>
+        <div class="insight-strip"><span class="dot-icon">i</span><span><b>How to use this page:</b> the dashboard and story are published on Tableau Public. Interact with the embedded views to inspect the underlying visualizations; this website’s styling does not alter the Tableau data or workbook.</span></div>
+      </div>
+    </section>
+
+    <section class="viz-section" id="dashboard">
+      <div class="wrap">
+        <div class="section-head">
+          <div><div class="eyebrow">Interactive workspace / 03</div><h2>Smart healthcare &amp; risk factor analysis dashboard</h2></div>
+          <p>Explore the full smart healthcare and risk factor analysis. Tableau’s own filters, tooltips and view controls remain available inside the embedded dashboard.</p>
+        </div>
+        <div class="viz-toolbar">
+          <div><b>SMART HEALTHCARE &amp; RISK FACTOR ANALYSIS DASHBOARD</b><span>Published visualization · Tableau Public</span></div>
+          <a class="pill" href="https://public.tableau.com/views/HealthcareInsightsDashboard_17931122291220/Dashboard" target="_blank" rel="noopener">Open on Tableau ↗</a>
+        </div>
+        <div class="viz-frame">
+          <div class="embed-wrap">
+            <div class="tableauPlaceholder" id="viz-healthcare-insights-dashboard">
+              <object class="tableauViz" style="display:none;">
+                <param name="host_url" value="https://public.tableau.com/">
+                <param name="embed_code_version" value="3">
+                <param name="site_root" value="">
+                <param name="name" value="HealthcareInsightsDashboard_17931122291220/Dashboard">
+                <param name="tabs" value="no">
+                <param name="toolbar" value="yes">
+                <param name="showVizHome" value="no">
+                <param name="display_static_image" value="yes">
+                <param name="display_spinner" value="yes">
+                <param name="display_overlay" value="yes">
+                <param name="display_count" value="no">
+                <param name="language" value="en-US">
+              </object>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="story-section" id="story">
+      <div class="wrap">
+        <div class="section-head">
+          <div><div class="eyebrow">Guided exploration / 04</div><h2>Smart Health Care Analysis: Patients Risk and Lifestyle Insights</h2></div>
+          <p>Use the story points in Tableau to move through patient risk and lifestyle insights in a guided sequence.</p>
+        </div>
+        <div class="story-card">
+          <div class="story-intro">
+            <div class="story-index">Smart Healthcare / Story 01</div>
+            <div>
+              <h3>From patient profiles to risk patterns.</h3>
+              <p>The story view presents the analysis as a guided sequence, helping readers explore patient risk indicators and lifestyle factors across patient groups.</p>
+            </div>
+            <a class="btn btn-primary" href="https://public.tableau.com/views/HealthcareInsightsStory/SmartHealthCareAnalysisPatientsRiskandLifestyleInsights" target="_blank" rel="noopener">Open full story ↗</a>
+          </div>
+          <div class="story-embed">
+            <div class="embed-wrap">
+              <div class="tableauPlaceholder" id="viz-healthcare-insights-story">
+                <object class="tableauViz" style="display:none;">
+                  <param name="host_url" value="https://public.tableau.com/">
+                  <param name="embed_code_version" value="3">
+                  <param name="site_root" value="">
+                  <param name="name" value="HealthcareInsightsStory/SmartHealthCareAnalysisPatientsRiskandLifestyleInsights">
+                  <param name="tabs" value="no">
+                  <param name="toolbar" value="yes">
+                  <param name="showVizHome" value="no">
+                  <param name="display_static_image" value="yes">
+                  <param name="display_spinner" value="yes">
+                  <param name="display_overlay" value="yes">
+                  <param name="display_count" value="no">
+                  <param name="language" value="en-US">
+                </object>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="methodology" style="background:#edf2ec">
+      <div class="wrap">
+        <div class="section-head">
+          <div><div class="eyebrow">Reading the analysis / 05</div><h2>Three ways to explore.</h2></div>
+          <p>Use these lenses as a guide when examining the charts. The dashboard is descriptive and should not be treated as a clinical diagnostic tool.</p>
+        </div>
+        <div class="method-grid">
+          <article class="method-card"><div class="num">LENS / 01</div><h3>Compare patient groups</h3><p>Use age-group and BMI-category views to compare how measured indicators differ across segments in the dataset.</p></article>
+          <article class="method-card"><div class="num">LENS / 02</div><h3>Explore lifestyle factors</h3><p>Review exercise, alcohol and smoking visualizations to understand how lifestyle categories are represented across patient groups.</p></article>
+          <article class="method-card"><div class="num">LENS / 03</div><h3>Interpret with context</h3><p>Check labels, units, filters and tooltips before drawing conclusions. Observed associations do not by themselves establish causation.</p></article>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <div class="wrap footer-inner">
+      <div><a class="brand" href="#home"><span class="brand-mark">✳</span><span>health360<small style="color:#9bb6ac">Patient risk observatory</small></span></a><p>Interactive healthcare risk and lifestyle analysis · Built with Tableau Public.</p></div>
+      <div class="footer-links"><a href="#overview">Overview</a><a href="#dashboard">Dashboard</a><a href="#story">Story</a><a href="#methodology">Methodology</a><a href="https://public.tableau.com/" target="_blank" rel="noopener">Tableau Public ↗</a></div>
+    </div>
+  </footer>
+  <button class="backtop" type="button" aria-label="Back to top" onclick="window.scrollTo({top:0,behavior:'smooth'})">↑</button>
+
+  <script>
+    (function () {
+      function loadTableauViz() {
+        var placeholders = document.querySelectorAll(".tableauPlaceholder");
+        placeholders.forEach(function (placeholder) {
+          var object = placeholder.querySelector("object.tableauViz");
+          if (!object || object.dataset.initialized === "true") return;
+          object.dataset.initialized = "true";
+          var script = document.createElement("script");
+          script.src = "https://public.tableau.com/javascripts/api/viz_v1.js";
+          object.parentNode.insertBefore(script, object);
+        });
+      }
+      function sizeTableau() {
+        document.querySelectorAll(".tableauPlaceholder").forEach(function (placeholder) {
+          var object = placeholder.querySelector("object.tableauViz");
+          if (!object) return;
+          var width = Math.max(320, placeholder.parentElement.clientWidth);
+          object.style.display = "block";
+          object.style.width = "100%";
+          object.style.minWidth = "0";
+          object.style.maxWidth = "100%";
+          object.style.height = (width < 620 ? "700px" : width < 900 ? "780px" : "900px");
+        });
+      }
+      window.addEventListener("load", function () {
+        loadTableauViz();
+        sizeTableau();
+      });
+      window.addEventListener("resize", sizeTableau);
+    })();
+  </script>
+</body>
+</html>
